@@ -92,7 +92,10 @@ jobs:
             for DAG in "${DAG_NAMES[@]}"; do 
               docker exec -t airflow-worker sh -c "airflow dags test $DAG"
             done
+        - name: Show Docker Compose logs on failure
+          if: failure()
+          run: docker compose logs --no-color --tail=100
         - name: Tear down Docker Compose
-          if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
-          run: docker compose down
+          if: always() && (steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch')
+          run: docker compose down -v
                   
