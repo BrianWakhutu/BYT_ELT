@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def load_path():
+def load_data():
     file_path = f"./data/BYT_data_{date.today()}.json"
 
     try: 

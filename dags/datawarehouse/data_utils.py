@@ -1,6 +1,6 @@
 
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from pyscopg2.extras import  RealDictCursor
+from psycopg2.extras import  RealDictCursor
 
 table ="yt_api"
 
@@ -12,7 +12,7 @@ def get_conn_cursor():
         cursor (RealDictCursor): A cursor object for executing SQL queries.
     """
     # Create a PostgresHook instance
-    hook = PostgresHook(postgres_conn_id="postgres_db_yt_etl", database="etl_db")
+    hook = PostgresHook(postgres_conn_id="postgres_db_yt_elt", database="elt_db")
 
     # Get a connection from the hook
     conn = hook.get_conn()
@@ -44,6 +44,47 @@ def create_schema(schema):
     finally:
         close_conn_cursor(conn, cursor)
 def create_table(schema, table):
+    conn, cursor = get_conn_cursor()
+
+    try:
+        cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {schema};")
+
+        if schema == "staging":
+            table_sql = f"""
+                CREATE TABLE IF NOT EXISTS {schema}.{table} (
+                    "Video_ID" VARCHAR(255) PRIMARY KEY,
+                    "Video_Title" TEXT NOT NULL,
+                    "Upload_Date" TIMESTAMPTZ NOT NULL,
+                    "Duration" TEXT,
+                    "Video_Views" BIGINT,
+                    "Likes_Count" BIGINT,
+                    "Comments_Count" BIGINT
+                );
+            """
+        else:
+            table_sql = f"""
+                CREATE TABLE IF NOT EXISTS {schema}.{table} (
+                    "Video_ID" VARCHAR(255) PRIMARY KEY,
+                    "Video_Title" TEXT NOT NULL,
+                    "Upload_Date" TIMESTAMPTZ NOT NULL,
+                    "Duration" TEXT,
+                    "Video_Type" VARCHAR(10),
+                    "Video_Views" BIGINT,
+                    "Likes_Count" BIGINT,
+                    "Comments_Count" BIGINT
+                );
+            """
+
+        cursor.execute(table_sql)
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error creating table {schema}.{table}: {e}")
+        raise
+
+    finally:
+        close_conn_cursor(conn, cursor)
     """
     Creates a table in the specified schema if it does not already exist.
 
@@ -68,7 +109,7 @@ def create_table(schema, table):
                "Video_Title" TEXT NOT NULL,
                "Upload_Date" TIMESTAMP NOT NULL,
                "Duration" TIME NOT NULL,
-               "Video_Type" VARCHAR(10) NOT NULL,"
+               "Video_Type" VARCHAR(10) NOT NULL,
                "Video_Views" INT,
                "Likes_Count" INT,
                "Comments_Count" INT        

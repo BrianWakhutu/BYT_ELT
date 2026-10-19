@@ -2,16 +2,16 @@
   "servers": {
     "datamate": {
       "type": "stdio",
-      "command": "/home/bwakhutu/.vscode-server/bin/04c0d99f4fb0d8afe6ce4f0c58e31e183ac3e4b1/node",
+      "command": "/home/bwakhutu/.vscode-server/bin/7baac39ec3ca969dab74ac12c097f6a486e46593/node",
       "args": [
-        "/home/bwakhutu/.vscode-server/extensions/altimateai.vscode-altimate-mcp-server-0.11.0-linux-x64/dist/datamate-cli.js",
+        "/home/bwakhutu/.vscode-server/extensions/altimateai.vscode-altimate-mcp-server-0.13.0-linux-x64/dist/datamate-cli.js",
         "start-stdio"
       ],
       "env": {
-        "ALTIMATE_EXTENSION_RPC": "/tmp/altimate-mcp-35229.sock",
+        "ALTIMATE_EXTENSION_RPC": "/tmp/altimate-mcp-1357.sock",
         "ELECTRON_RUN_AS_NODE": "1"
       },
-      "updatedAt": "2026-10-01T01:06:34.659Z"
+      "updatedAt": "2026-10-19T09:13:14.790Z"
     }
   }
 }
